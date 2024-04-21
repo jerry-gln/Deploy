@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Nav</title>
+    <!-- Add your CSS and JavaScript links here if needed -->
+    <!-- Assuming you've included Font Awesome CSS in your project -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* CSS for blinking effect */
+        .blinking {
+            animation: blinker 1s linear infinite;
+        }
+
+        @keyframes blinker {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Adjustments for the search button */
+        .search-input-group {
+            display: flex;
+            align-items: center;
+        }
+
+        #search-input {
+            margin-right: 3px;
+        }
+
+        .btn-primary {
+            padding: 6px 6px;
+        }
+    </style>
+</head>
+<body>
+    <!--Topside-->
+    <div class="container">
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card" >
+                    <!-- Add 'blinking' class and change background color based on stock status -->
+                    <div class="card-header {% if low_stock_products %}bg-danger text-black blinking{% else %}bg-success text-white{% endif %}">
+                        {% if low_stock_products %}Low Stock Notification{% else %}No Low Stock{% endif %}
+                    </div>
+                    <div class="card-body">
+                        <marquee behavior="" direction="">
+                            <!-- Display low stock products -->
+                            {% if low_stock_products %}
+                            {% for product in low_stock_products %}
+                            <h3>{{ product.name }} - Quantity: {{ product.quantity }}</h3>
+                            {% endfor %}
+                            {% else %}
+                            <p>No products are low in stock.</p>
+                            {% endif %}
+                        </marquee>
+                    </div>
+                </div>
+            </div>
+
+           <!-- Sales Container -->
+           <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-info text-white text-center">
+                    <i class="fas fa-shopping-cart"></i> Sales Point
+                </div>
+                <div class="card-body">
+                    <div class="card-body text-center">
+                    <!-- Make Sales button -->
+                    <a href="{% url 'dashboard-sales' %}" class="btn btn-primary">Make Sales</a>
+                </div>
+
+                <!-- Line between Sales and Suppliers -->
+            <hr>
+
+                    <!-- Supplier Container -->
+                    <div class="container mt-3">
+                        <div class="card">
+                            <div class="card-header bg-info text-white text-center">
+                                <i class="fas fa-truck"></i> Suppliers
+                            </div>
+                            <div class="card-body">
+                                <div class="card-body text-center">
+                                <!-- Add a button to navigate to suppliers page -->
+                                <a href="{% url 'dashboard-suppliers' %}" class="btn btn-primary">My Suppliers</a>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Supplier Container -->
+                </div>
+            </div>
+        </div>
+        <!-- End Sales Container -->
+            
+            <!-- Manage Container -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-info text-white text-center">
+                        <span><i class="fas fa-cogs"></i>Manage</span>
+                    </div>
+                    <div class="card-body">
+                        <form id="search-form" class="search-input-group" action="{% url 'dashboard-search-results' %}" method="get">
+                            <input type="text" name="q" id="search-input" placeholder="Search...">
+                            <button type="submit" class="btn btn-info">Search</button>
+                        </form>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a class="text-decoration-none text-dark" href="{% url 'dashboard-staff' %}">
+                                    <div class="card my-card shadow text-center p-3">
+                                        <h4><i class="fas fa-users"></i> Logs</h4>
+                                        <h3>{{ workers_count }}</h3>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-12">
+                                <a class="text-decoration-none text-dark" href="{% url 'dashboard-product' %}">
+                                    <div class="card my-card shadow text-center p-3">
+                                        <h4><i class="fas fa-box"></i> Products</h4>
+                                        <h3>{{ product_count }}</h3>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-12">
+                                <a class="text-decoration-none text-dark" href="{% url 'dashboard-order' %}">
+                                    <div class="card my-card shadow text-center p-3">
+                                        <h4><i class="fas fa-shipping-fast"></i> Orders</h4>
+                                        <h3>{{ orders_count }}</h3>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Manage Container -->
+        </div>
+    </div>
+    <!--End Topside-->
+
+    <!-- Audio element for beep sound -->
+    <audio id="beepSound">
+        <source src="https://www.soundjay.com/button/beep-07.wav" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
+
+     <!-- JavaScript -->
+     <script>
+        // Play beep sound function
+        function playBeepSound() {
+            var audio = document.getElementById("beepSound");
+            audio.play();
+        }
+
+        // Check if there are low stock products and play beep sound if true
+        {% if low_stock_products %}
+            // Play beep sound when page loads
+            window.onload = function() {
+                playBeepSound();
+            };
+        {% endif %}
+    </script>
+</body>
+</html>

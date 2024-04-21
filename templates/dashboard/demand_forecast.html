@@ -1,0 +1,75 @@
+{% extends 'partials/base.html' %}
+{% block title %}Demand Forecast{% endblock %}
+{% block content %}
+<div class="container text-center">
+    <h4>Demand Forecast</h4>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Top Products Forecast</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Demand (units)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product, demand in top_products_forecast %}
+                        <tr>
+                            <td>{{ product }}</td>
+                            <td>{{ demand }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <!-- "Generate Report" button below the table -->
+            <div class="container text-center mt-4 blinking-container">
+                <a href="{% url 'pdf-report' %}" class="btn btn-primary blinking-button">Generate Sales Report</a>
+            </div>
+        </div>
+        <!-- Paragraphs container beside the table -->
+        <div class="col-md-6">
+            <div class="container bg-light p-3 animated-text-container">
+                <p class="animated-text">This demand forecast is based on how many products should be in stock up to one month.</p>
+                <p class="animated-text">It relies on the sale of products per day.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    @keyframes blink {
+        0% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .blinking-button {
+        animation: blink 2s infinite;
+    }
+
+    @keyframes slideInRight {
+        0% {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        100% {
+            transform: translateX(0%);
+            opacity: 1;
+        }
+    }
+
+    .animated-text-container {
+        animation: slideInRight 1s ease-out;
+    }
+
+    .animated-text {
+        animation: slideInRight 1s ease-out;
+    }
+</style>
+{% endblock %}

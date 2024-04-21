@@ -1,0 +1,58 @@
+{% extends 'partials/base.html' %}
+{% block title %}Orders{% endblock %}
+
+{% block content %}
+
+  {% include 'partials/topnav_top.html' %}
+
+<div class="container">
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header text-center">
+                    Make Manual Order
+                </div>
+                <div class="card-body d-flex justify-content-center">
+                    <!-- Add d-flex and justify-content-center -->
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <a href="{% url 'dashboard-staff-index' %}" class="btn btn-info">Make Manual Order</a>
+                        <!-- Changed the anchor tag to a button for form submission -->
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h3>Auto Orders</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Order Quantity</th>
+                                <th>Supplier</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in auto_orders %}
+                            <tr>
+                                <td>{{ order.product.name }}</td>
+                                <td>{{  order.order_quantity }}</td>
+                                <td>{{ auto_order.supplier.name }}</td>
+                                <td>{{ order.date|date:"F d, Y H:i" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

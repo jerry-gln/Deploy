@@ -1,0 +1,17 @@
+{% extends 'partials/base.html' %}
+{% block title %}Suppliers{% endblock %}
+
+{% block content %}
+<!-- order_email.html -->
+<html>
+<head></head>
+<body>
+    <h2>New Order Details</h2>
+    <p><strong>Product Name:</strong> {{ product.name }}</p>
+    <p><strong>Quantity:</strong> {{ product.quantity }}</p>
+    <p><strong>Customer Name:</strong> {{ customer_name }}</p>
+    <!-- Add more order details as needed -->
+</body>
+</html>
+
+{% endblock %}

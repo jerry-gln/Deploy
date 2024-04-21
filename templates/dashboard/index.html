@@ -1,0 +1,92 @@
+{% extends 'partials/base.html' %}
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated and user.is_staff and user.is_superuser %}
+  {% include 'partials/topnav.html' %}
+
+
+<!--Graphs-->
+<div class="container">
+    <div class="row my-5">
+        <div class="col-md-6">
+            <div class="bg-gray chart-container">
+                <canvas id="myChart1" width="400" height="300"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="bg-light-gray chart-container">
+                <canvas id="myChart" width="400" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<!--End Graphs-->
+
+{% else %}
+{% include 'dashboard/staff_index.html' %}
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // JavaScript for chart 1
+    var ctx1 = document.getElementById('myChart1').getContext('2d');
+    var myChart1 = new Chart(ctx1, {
+        type: 'bar', // Changed to bar chart
+        data: {
+            labels: [{% for order in orders %} '{{ order.product.name }}', {% endfor %}],
+            datasets: [{
+                label: 'Auto Orders', // Label for the line graph
+                data: [{% for order in orders %} {{ order.order_quantity }}, {% endfor %}],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)', // Background color
+                borderColor: 'rgba(54, 162, 235, 1)', // Border color
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+    // JavaScript for chart 2
+    var ctx2 = document.getElementById('myChart').getContext('2d');
+    var products = [{% for product in products %} { name: '{{ product.name }}', quantity: {{ product.quantity }} }, {% endfor %}];
+    var dataPoints = products.map(function(product) {
+        return {
+            x: product.name,
+            y: product.quantity,
+            pointBackgroundColor: product.quantity < 50 ? 'red' : 'blue', // Change point color based on quantity
+            pointRadius: 6 // Adjust point size for visibility
+        };
+    });
+    var myChart2 = new Chart(ctx2, {
+        type: 'line', // Changed to line chart
+        data: {
+            labels: products.map(function(product) { return product.name; }),
+            datasets: [{
+                label: 'Products', // Label for the line graph
+                data: dataPoints,
+                borderColor: 'blue', // Line color
+                borderWidth: 1,
+                fill: false // Disable fill between data points
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
+
+{% endblock %}

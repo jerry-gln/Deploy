@@ -1,0 +1,43 @@
+{% extends 'partials/base.html' %}
+{% block title %}Sales Analysis{% endblock %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="container">
+                <h4>Demand Forecast</h4>
+                <p>Explore demand forecast <a href="{% url 'demand-forecast' %}">here</a>.</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="container">
+                <h4>Infrequent Products</h4>
+                {% if infrequent_products %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Number of Sales</th>
+                                <th>Available Stock</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in infrequent_products %}
+                                <tr>
+                                    <td>{{ product.name }}</td>
+                                    <td>{{ product.num_sales }}</td>
+                                    <td>{{ product.quantity }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No infrequent products found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

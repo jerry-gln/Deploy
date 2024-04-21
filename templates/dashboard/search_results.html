@@ -1,0 +1,38 @@
+{% extends 'partials/base.html' %}
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Search Results for "{{ query }}"</h1>
+    {% if results %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in results %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.quantity }}</td>
+                <td>
+                    <!-- Edit button -->
+                    <a href="{% url 'dashboard-product-update' pk=product.pk %}" class="btn btn-primary">Edit</a>
+                    <!-- Delete button -->
+                    <form action="{% url 'dashboard-product-delete' pk=product.pk %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No results found.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'partials/base.html' %}
+{% block title %}Demand Forecast{% endblock %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Demand Forecast Report</title>
+</head>
+<body>
+    <h1>Demand Forecast Report</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Demand (units)</th>
+                <th>Total Sales Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product, demand in most_sold_items %}
+                <tr>
+                    <td>{{ product }}</td>
+                    <td>{{ demand }}</td>
+                    <td>{{ total_sales_prices[product] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+{% endblock %}

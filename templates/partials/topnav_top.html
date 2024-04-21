@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Nav</title>
+    <!-- Add your CSS and JavaScript links here if needed -->
+    <style>
+        /* CSS for blinking effect */
+        .blinking {
+            animation: blinker 1s linear infinite;
+        }
+
+        @keyframes blinker {
+            50% {
+                opacity: 0;
+            }
+        }
+        /* Custom CSS for search input */
+        .search-input-group {
+            float: right;
+            margin-top: 10px; /* Adjust the top margin as needed */
+        }
+
+        /* Custom CSS for search button */
+        .search-button {
+            background-color: #0ba2ac; /* Change the background color to desired color */
+            border-color: #0ba2ac; /* Change the border color to match background color */
+            color: #fff; /* Change the text color to white */
+        }
+
+            /* Override button hover and focus styles if needed */
+            .search-button:hover,
+            .search-button:focus {
+                background-color: #0ba2ac; /* Change the background color on hover/focus */
+                border-color: #0ba2ac; /* Change the border color on hover/focus */
+                color: #fff; /* Change the text color on hover/focus */
+            }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function handleSearch() {
+            // Retrieve search query from input field
+            var query = document.getElementById('search-input').value;
+
+            // Perform search logic
+            // You can use AJAX to send the search query to the server and handle the response
+
+            // For demonstration purposes, log the search query to the console
+            console.log('Search query:', query);
+        }
+    </script>
+    <!-- Include Font Awesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!--Topside-->
+    <div class="container">
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <!-- Add 'blinking' class and change background color to danger -->
+                    <div class="card-header bg-info text-white blinking">
+                        Orders Information
+                    </div>
+                    <div class="card-body">
+                        <!-- Container to display current date and time -->
+                        <div id="datetimeContainer"></div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        Manage
+                        <form id="search-form" class="search-input-group" action="{% url 'dashboard-search-results' %}" method="get">
+                            <input type="text" name="q" id="search-input">
+                            <button type="submit" class="search-button">Search</button>
+                        </form>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <a class="text-decoration-none text-dark" href="{% url 'dashboard-staff' %}">
+                                    <div class="card my-card shadow text-center p-3">
+                                        <h4><i class="fas fa-users"></i> Logs</h4>
+                                        <h3>{{ workers_count }}</h3>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a class="text-decoration-none text-dark" href="{% url 'dashboard-product' %}">
+                                    <div class="card my-card shadow text-center p-3">
+                                        <h4><i class="fas fa-box"></i> Products</h4>
+                                        <h3>{{ product_count }}</h3>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a class="text-decoration-none text-dark" href="{% url 'dashboard-order' %}">
+                                    <div class="card my-card shadow text-center p-3">
+                                        <h4><i class="fas fa-shipping-fast"></i> Auto Orders</h4>
+                                        <h3>{{ orders_count }}</h3>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--End Topside-->
+    <!-- JavaScript to display current date and time -->
+    <script>
+        // Function to update the date and time container
+        function updateDateTime() {
+            // Get the current date and time
+            var currentDate = new Date();
+
+            // Construct the string to display
+            var datetimeString = currentDate.toLocaleString();
+
+            // Update the datetime container
+            document.getElementById("datetimeContainer").textContent = datetimeString;
+        }
+
+        // Update the date and time initially and set interval for updating every second
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+    </script>
+</body>
+</html>

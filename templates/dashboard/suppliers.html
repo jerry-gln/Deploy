@@ -1,0 +1,108 @@
+{% extends 'partials/base.html' %}
+{% block title %}Suppliers{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suppliers</title>
+    <style>
+        /* Basic styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .container {
+    max-width: 1200px; /* Adjust as needed */
+    margin: 0 auto; /* Center horizontally */
+}
+
+
+    </style>
+</head>
+<body>
+
+    <div class="border bg-white p-1">
+        <h4>Add Supplier</h4>
+        <!-- Supplier Form -->
+        <form id="supplier-form" method="POST">
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit" class="btn btn-info">Add</button>
+        </form>
+    </div>
+        
+        <div class="col-md-8">
+            <div class="container">
+            <h4>Suppliers List</h4>
+
+        <table class="table bg-white">  
+            <thead class="bg-info">
+                <tr class="text-white">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Product</th>
+                    <th>Actions</th> <!-- New column for actions -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for supplier in suppliers %}
+                <tr>
+                    <td>{{ supplier.name }}</td>
+                    <td>{{ supplier.email }}</td>
+                    <td>{{ supplier.phone_number }}</td>
+                    <td>{{ supplier.product.name }}</td>
+                    <td class="action-buttons">
+                        <!-- Edit button -->
+                        <a href="{% url 'dashboard-edit-supplier' supplier.id %}" class="btn btn-sm btn-primary">Edit</a>
+                        <!-- Delete button (submit form) -->
+                        <a href="{% url 'dashboard-delete-supplier' supplier.id %}" class="btn btn-sm btn-danger">Delete</a>
+                            
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+</body>
+</html>
+{% endblock %}

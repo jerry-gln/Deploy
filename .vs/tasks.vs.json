@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "task-staff_inde",
+      "appliesTo": "templates/dashboard/staff_inde.html",
+      "type": "launch"
+    }
+  ]
+}

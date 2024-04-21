@@ -1,0 +1,111 @@
+{% extends 'partials/base.html' %}
+{% block title %}Sales{% endblock %}
+{% block content %}
+<div class="container">
+    <style>
+        /* CSS styles */
+        .sales-container {
+            /* Add your styles for the form container here */
+        }
+
+        .sold-products {
+            /* Add your styles for the sold products container here */
+        }
+
+        .insufficient-stock-container {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 50px;
+            margin-bottom: 15px;
+        }
+
+        /* Add your custom styles for the new container below */
+        .additional-container {
+            /* Add your styles for the additional container here */
+            animation: blink 1s infinite;
+            background-color: #ffeeba; /* Change the background color here */
+            display: inline; /* Make the container size fit its content */
+            max-width: 300px; /* Adjust the maximum width of the container */
+            width: 50%; /* Ensure the container takes up the available width */
+            margin-left: 9%; /* Set margin-left to align the container with the left margin */
+            padding: 0px; /* Reset padding */
+        }
+
+        /* Define the blink animation */
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+    </style>
+    <div class="row">
+        <div class="col-md-4">
+            {% if error_message %}
+            <div class="insufficient-stock-container text-center">
+                <h3>Insufficient Stock</h3>
+                <p>{{ error_message|safe }}</p>
+                <p>Quantity Entered: {{ quantity_sold }}</p>
+                <a href="{% url 'dashboard-sales' %}" class="btn btn-success">Adjust the Quantity</a>
+            </div>
+            {% else %}
+            <h3>Sell a Product</h3>
+            <div class="sales-container text-center">
+                <form method="post" id="sales-form">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success">Sell Product</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            {% if not error_message %}
+            <div class="sold-products text-center">
+                <h3>Sold Products</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity Sold</th>
+                            <th>Total Price(Ksh.)</th>
+                            <th>Sold By</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sold_product in sold_products %}
+                        <tr>
+                            <td>{{ sold_product.product }}</td>
+                            <td>{{ sold_product.quantity_sold }}</td>
+                            <td>{{ sold_product.total_price }}</td>
+                            <td>{{ sold_product.staff }}</td>
+                            <td>{{ sold_product.date_sold }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Flash message for low stock -->
+            {% if low_stock_flag %}
+            <div class="alert alert-warning alert-dismissible fade show mt-3" role="alert">
+                <strong>Low Stock Alert!</strong> One or more products are low in stock. Please check the product inventory.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endif %}
+            
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- New container below the sales form -->
+<div class="container additional-container">
+    <h4>Sales Insights</h4>
+    <p>View Demand Forecast and Infrequent Products <a href="{% url 'dashboard-sales-analysis' %}">here</a>.</p>
+    <!-- Add your content for the additional container here -->
+</div>
+{% endblock %}

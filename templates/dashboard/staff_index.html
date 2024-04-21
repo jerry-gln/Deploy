@@ -1,0 +1,186 @@
+{% extends 'partials/base.html' %}
+{% block title %}Orders{% endblock %}
+
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    Order Form
+                </div>
+                <div class="card-body">
+                    <!-- Order Form -->
+                    <form id="order-form" method="POST">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <!-- M-Pesa Logo -->
+                        <div class="d-flex justify-content-center mt-3">
+                            <img src="https://centwarrior.com/wp-content/uploads/2023/03/MPESA-transaction-charges-300x97.jpg" alt="Mpesa" style="max-width: 100px; max-height: 80px;">
+                        </div>
+                        <!-- Paying option -->
+                        <div class="mb-3">
+                            <label for="paying_option" class="form-label">Enter Paying Option</label>
+                            <input type="text" class="form-control" id="paying_option" placeholder="Till Number or Paybill">
+                            <small id=Options: class="form-text text-muted">Type in Till or Paybill.</small>
+                        </div>
+
+
+                        <!-- Till Number fields -->
+                        <div id="till-fields" style="display: none;">
+                            <div class="mb-3">
+                                <label for="till_number" class="form-label">Till Number</label>
+                                <input type="text" class="form-control" id="till_number" name="till_number">
+                            </div>
+                            <div class="mb-3">
+                                <label for="amount_till" class="form-label">Amount (Ksh.)</label>
+                                <input type="text" class="form-control" id="amount_till" name="amount_till">
+                            </div>
+                        </div>
+
+                        <!-- Paybill Number fields -->
+                        <div id="paybill-fields" style="display: none;">
+                            <div class="mb-3">
+                                <label for="paybill_number" class="form-label">Paybill Number</label>
+                                <input type="text" class="form-control" id="paybill_number" name="paybill_number">
+                            </div>
+                            <div class="mb-3">
+                                <label for="account_number" class="form-label">Account Number</label>
+                                <input type="text" class="form-control" id="account_number" name="account_number">
+                            </div>
+                            <div class="mb-3">
+                                <label for="amount_paybill" class="form-label">Amount (Ksh.)</label>
+                                <input type="text" class="form-control" id="amount_paybill" name="amount_paybill">
+                            </div>
+                        </div>
+
+                        <!-- Make Payment button -->
+                        <button type="button" class="btn btn-primary btn-block mt-2" id="make-payment-btn">Make Payment</button>
+                        <!-- Make Order button -->
+                        <button type="submit" class="btn btn-info btn-block" id="make-order-btn">Place Order</button>
+                        <!-- Cancel button -->
+                        <button type="button" class="btn btn-danger btn-block" id="cancel-btn">Cancel</button>
+
+                    </form>
+                    <!-- End of Order Form -->
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    Orders Records
+                </div>
+                <div class="card-body">
+                    <table class="table bg-white">
+                        <thead class="bg-info text-white">
+                            <tr>
+                                <th scope="col">Product</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Supplier</th>
+                                <th scope="col">Date</th> <!-- Add Date column -->
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>{{ order.product.name }}</td>
+                                <td>{{ order.product.category }}</td>
+                                <td>{{ order.order_quantity }}</td>
+                                <td>{{ order.supplier }}</td>
+                                <td>{{ order.date }}</td> <!-- Display the date -->
+                                <td>
+                                    <a class="btn btn-danger btn-sm" href="{% url 'dashboard-cancel-order' order.id %}">Cancel Order</a>
+                                </td>
+                                
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    // Function to send SMS using Twilio
+    function sendSMS(phoneNumber, message) {
+        fetch('/send_sms/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ phone_number: phoneNumber, message: message })
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log('SMS sent successfully!');
+                    return response.json();
+                } else {
+                    console.error('Failed to send SMS');
+                    throw new Error('Failed to send SMS');
+                }
+            })
+            .then(data => {
+                alert(`Confirmation message sent to ${phoneNumber}. Please follow the instructions to complete the payment.`);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to send SMS. Please try again later.');
+            });
+    }
+
+    // Show the appropriate fields based on Paying Option input
+    document.getElementById('paying_option').addEventListener('input', function () {
+        var payingOption = this.value.toLowerCase();
+
+        // Hide all fields initially
+        document.getElementById('till-fields').style.display = 'none';
+        document.getElementById('paybill-fields').style.display = 'none';
+
+        // Show fields based on paying option
+        if (payingOption.includes('till')) {
+            document.getElementById('till-fields').style.display = 'block';
+        } else if (payingOption.includes('paybill')) {
+            document.getElementById('paybill-fields').style.display = 'block';
+        }
+    });
+
+    // Handle Make Order and Make Payment button clicks
+    document.getElementById('make-order-btn').addEventListener('click', function () {
+        // Your logic for making an order
+        alert('Order successful!');
+    });
+
+    document.getElementById('make-payment-btn').addEventListener('click', function () {
+        var phoneNumber = prompt('Enter your mobile phone number:');
+        if (phoneNumber != null && phoneNumber !== '' && /^\d{10}$/.test(phoneNumber)) {
+            var amount = document.getElementById('amount').value; // Get the amount from the form
+            var message = `Please enter your M-Pesa PIN to pay Ksh. ${amount} to the provided Till/Paybill number.`;
+            sendSMS(phoneNumber, message);
+            alert(`Confirmation message sent to ${phoneNumber}. Please follow the instructions to complete the payment.`);
+        } else {
+            alert('Invalid mobile phone number. Payment failed.');
+        }
+    });
+
+    // Handle Cancel button click
+    document.getElementById('cancel-btn').addEventListener('click', function () {
+        // Reset the form
+        document.getElementById('order-form').reset();
+        // Hide the Till and Paybill fields
+        document.getElementById('till-fields').style.display = 'none';
+        document.getElementById('paybill-fields').style.display = 'none';
+    });
+</script>
+
+
+{% endblock %}
