@@ -39,7 +39,6 @@ from reportlab.platypus import Image
 import io
 from .models import AutoOrder
 from .models import SoldProduct
-from django.db.models.functions import TruncDay
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
